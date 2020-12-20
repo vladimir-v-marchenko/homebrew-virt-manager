@@ -4,10 +4,11 @@ class VirtManager < Formula
   desc "App for managing virtual machines"
   homepage "https://virt-manager.org/"
   url "https://virt-manager.org/download/sources/virt-manager/virt-manager-3.2.0.tar.gz"
-  # sha256 "ccc98bda8c336c58031c2c3f3c7948daa2f9d150e2d406519216734f3b25832a"
-  revision 3
+  sha256 "2b6fe3d90d89e1130227e4b05c51e6642d89c839d3ea063e0e29475fd9bf7b86"
+  revision 1
 
   depends_on "intltool" => :build
+  depends_on "libtool" => :build
   depends_on "pkg-config" => :build
 
   depends_on "adwaita-icon-theme"
@@ -25,6 +26,7 @@ class VirtManager < Formula
   depends_on "python"
   depends_on "spice-gtk"
   depends_on "vte3"
+  depends_on "docutils"
 
   resource "libvirt-python" do
     url "https://libvirt.org/sources/python/libvirt-python-6.10.0.tar.gz"
@@ -56,8 +58,13 @@ class VirtManager < Formula
     sha256 "11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4"
   end
 
+  resource "docutils"
+    url "https://downloads.sourceforge.net/project/docutils/docutils/0.16/docutils-0.16.tar.gz"
+    sha256 "7d4e999cca74a52611773a42912088078363a30912e8822f7a3d38043b767573"
+  end
+
   # virt-manager doesn't prompt for password on macOS unless --no-fork flag is provided
-  patch :DATA
+  # patch :DATA
 
   def install
     venv = virtualenv_create(libexec, "python3")
@@ -93,18 +100,18 @@ class VirtManager < Formula
     system "#{bin}/virt-manager", "--version"
   end
 end
-__END__
-diff --git a/virt-manager b/virt-manager
-index 15d5109..8ee305a 100755
---- a/virt-manager
-+++ b/virt-manager
-@@ -151,7 +151,8 @@ def parse_commandline():
-         help="Print debug output to stdout (implies --no-fork)",
-         default=False)
-     parser.add_argument("--no-fork", action="store_true",
--        help="Don't fork into background on startup")
-+        help="Don't fork into background on startup",
-+        default=True)
+# __END__
+# diff --git a/virt-manager b/virt-manager
+# index 15d5109..8ee305a 100755
+# --- a/virt-manager
+# +++ b/virt-manager
+# @@ -151,7 +151,8 @@ def parse_commandline():
+#          help="Print debug output to stdout (implies --no-fork)",
+#          default=False)
+#      parser.add_argument("--no-fork", action="store_true",
+# -        help="Don't fork into background on startup")
+# +        help="Don't fork into background on startup",
+# +        default=True)
 
-     parser.add_argument("--show-domain-creator", action="store_true",
-         help="Show 'New VM' wizard")
+#      parser.add_argument("--show-domain-creator", action="store_true",
+#          help="Show 'New VM' wizard")
